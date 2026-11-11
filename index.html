@@ -260,8 +260,6 @@ const SURVEYS = {
       {h:'Experiencias extra',p:'Lo que sumamos al GP',q:[
         choice('¿Fuiste a la cena del viernes con La Nena de F1?',['Sí','No']),
         scale('Si fuiste: ¿qué tal la cena? (lugar, comida, dinámica)'),
-        choice('¿Hiciste algún opcional el lunes?',['Sí','No']),
-        short('Si hiciste un opcional, ¿cuál y qué tal?','Contanos…'),
         choice('¿Jugaste al juego / app de Sí Viajo Sports?',['Sí','No','No me enteré']),
         scale('Si jugaste: ¿qué te pareció?'),
         text('¿Qué experiencia te hubiera gustado sumar?','Ideas bienvenidas…')
@@ -308,7 +306,7 @@ const SURVEYS = {
         ['Hoteles','Rooming, habitaciones, quejas recibidas'],
         ['Traslados al circuito','Puntualidad del proveedor, regresos, pasajeros perdidos o demorados'],
         ['Entradas y operatoria con Enjoy','Entrega, errores, sectores'],
-        ['Cena y opcionales','Cena del viernes y opcionales del lunes'],
+        ['Cena del viernes','Cena con La Nena de F1'],
         ['Regreso del 9','Traslados, check-in, último vuelo 22:40']
       ].map(([h,p])=>({h,p,q:[scale('Puntaje de la etapa'),text('¿Qué falló?','Detalle…'),text('¿Qué propondrías?','Propuesta…')]})),
       {h:'Pasajeros',p:'Seguimiento',q:[
