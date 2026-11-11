@@ -228,11 +228,9 @@ const SURVEYS = {
         scale('Presencia y ayuda de los responsables Sí Viajo en el avión'),
         text('Comentarios sobre los vuelos','Lo bueno y lo que mejorarías…')
       ]},
-      {h:'Llegada y traslados',p:'Aeropuerto ↔ hotel',q:[
-        scale('Recepción en el aeropuerto de São Paulo'),
-        scale('Tiempo de espera hasta salir hacia el hotel'),
-        scale('Comodidad del transporte'),
-        scale('Traslado hotel → aeropuerto el día de regreso')
+      {h:'Traslados',p:'Aeropuerto, hotel y circuito',q:[
+        {...scale('¿Cómo evaluás los traslados en general?'),noCmt:true},
+        text('Comentarios sobre los traslados','Contanos lo que quieras…')
       ]},
       {h:'Hotel',p:'Tu base en São Paulo',q:[
         short('¿En qué hotel te alojaste?','Nombre del hotel'),
@@ -243,15 +241,6 @@ const SURVEYS = {
         scale('Atención del personal'),
         choice('¿Volverías a elegir este hotel?',['Sí','No','Me da igual']),
         text('Comentarios sobre el hotel','Contanos…')
-      ]},
-      {h:'Traslados al circuito',p:'Hotel ↔ Interlagos',q:[
-        multi('¿Qué días usaste el traslado?',['Viernes','Sábado','Domingo']),
-        scale('Puntualidad de las salidas desde el hotel'),
-        scale('Tiempo de viaje hasta Interlagos'),
-        scale('Claridad del punto de encuentro a la salida del circuito'),
-        scale('Organización del regreso al hotel (espera, orden, seguridad)'),
-        scale('Comodidad de los micros / vans'),
-        text('¿Qué día fue el más complicado y por qué?','Contanos…')
       ]},
       {h:'Circuito y entradas',p:'Adentro del autódromo',q:[
         short('¿Qué tipo de entrada tenías?','Sector / tribuna / hospitality'),
@@ -372,7 +361,7 @@ function render(){
       }else{
         html+=`<input class="txt" name="${id}" placeholder="${q.ph||''}">`;
       }
-      if(q.type!=='text'&&q.type!=='short'){
+      if(q.type!=='text'&&q.type!=='short'&&!q.noCmt){
         html+=`<input class="txt cmt" name="${id}_c" placeholder="💬 Comentario (opcional)">`;
       }
       html+='</div>';
