@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuesta Interlagos 2026 · Sí Viajo Sports</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#FFD400; --yellow-d:#e6bf00; --black:#0b0b0b; --ink:#141414; --card:#191919;
+    --line:#2a2a2a; --muted:#9a9a9a; --white:#f7f7f2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--black);color:var(--white);font-family:Inter,system-ui,sans-serif;min-height:100vh;
+    background-image:radial-gradient(circle at 85% -10%,rgba(255,212,0,.13),transparent 45%),radial-gradient(circle at -10% 110%,rgba(255,212,0,.07),transparent 40%);}
+  .checker{height:14px;background:
+    conic-gradient(var(--white) 25%,var(--black) 0 50%,var(--white) 0 75%,var(--black) 0) 0 0/14px 14px;opacity:.9}
+  header{position:relative;overflow:hidden;padding:44px 22px 34px;max-width:860px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.14em;font-size:12px;text-transform:uppercase;color:var(--yellow)}
+  .brand .dot{width:9px;height:9px;background:var(--yellow);border-radius:50%;box-shadow:0 0 14px var(--yellow)}
+  h1{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;text-transform:uppercase;
+    font-size:clamp(46px,10vw,92px);line-height:.88;margin:16px 0 14px;letter-spacing:-.01em}
+  h1 span{color:var(--yellow);display:block}
+  .sub{color:#cfcfc8;font-size:16px;max-width:560px;line-height:1.55}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .pill{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:#d6d6d0;background:#121212}
+  .speed{position:absolute;right:-40px;top:40px;width:300px;height:300px;pointer-events:none;opacity:.18}
+  .tabs{max-width:860px;margin:0 auto 6px;padding:0 22px;display:flex;gap:8px}
+  .tab{flex:1;border:1px solid var(--line);background:#121212;color:#cfcfc8;border-radius:12px;padding:12px 14px;
+    font:600 14px Inter;cursor:pointer;transition:.2s;text-align:left}
+  .tab small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+  .tab.on{background:var(--yellow);color:var(--black);border-color:var(--yellow)}
+  .tab.on small{color:#3a3200}
+  .progress-wrap{position:sticky;top:0;z-index:5;background:rgba(11,11,11,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .progress-in{max-width:860px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:14px}
+  .bar{flex:1;height:8px;background:#222;border-radius:9px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--yellow-d),var(--yellow));border-radius:9px;transition:width .4s}
+  .ptxt{font-family:'Barlow Condensed';font-weight:800;font-size:18px;color:var(--yellow);min-width:110px;text-align:right;letter-spacing:.03em}
+  main{max-width:860px;margin:0 auto;padding:22px 22px 80px}
+  .intro{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--yellow);border-radius:14px;padding:18px 20px;margin-bottom:18px;color:#ddd;line-height:1.55;font-size:15px}
+  .intro b{color:var(--white)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+  section.blk{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:18px 0;overflow:hidden}
+  .blk-h{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#1e1e1e,#171717)}
+  .num{font-family:'Barlow Condensed';font-style:italic;font-weight:800;font-size:34px;color:var(--black);background:var(--yellow);
+    min-width:52px;height:46px;display:grid;place-items:center;border-radius:10px;transform:skewX(-8deg)}
+  .num span{transform:skewX(8deg)}
+  .blk-h h2{font-family:'Barlow Condensed';font-weight:800;text-transform:uppercase;font-size:26px;letter-spacing:.02em;line-height:1}
+  .blk-h p{color:var(--muted);font-size:13px;margin-top:3px}
+  .q{padding:18px 20px;border-bottom:1px solid #222}
+  .q:last-child{border-bottom:none}
+  .q label.t{display:block;font-weight:600;font-size:15px;margin-bottom:12px;line-height:1.4}
+  .q label.t em{font-style:normal;color:var(--muted);font-weight:400;font-size:13px}
+  .q.done label.t::before{content:"✓ ";color:var(--yellow)}
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .scale.nps{grid-template-columns:repeat(11,1fr);gap:5px}
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .opt span{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #333;border-radius:10px;background:#111;
+    cursor:pointer;font-weight:600;font-size:15px;transition:.15s;user-select:none;text-align:center;padding:8px 10px;line-height:1.25}
+  .scale .opt span{font-family:'Barlow Condensed';font-weight:800;font-size:22px}
+  .scale.nps .opt span{font-size:18px;min-height:42px;padding:4px}
+  .opt span:hover{border-color:var(--yellow);color:var(--yellow)}
+  .opt input:checked + span{background:var(--yellow);color:var(--black);border-color:var(--yellow);box-shadow:0 6px 18px rgba(255,212,0,.25)}
+  .opt input:focus-visible + span{outline:2px solid var(--yellow);outline-offset:2px}
+  .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips .opt span{min-height:40px;font-size:14px;font-weight:500;padding:8px 14px;border-radius:999px}
+  textarea,input.txt{width:100%;background:#0f0f0f;border:1px solid #333;border-radius:12px;color:var(--white);font:15px Inter;padding:13px 14px;resize:vertical;transition:.15s}
+  textarea{min-height:92px}
+  input.cmt{margin-top:12px;padding:10px 13px;font-size:14px;background:#121212;border-style:dashed;border-color:#3a3a3a}
+  textarea:focus,input.txt:focus{outline:none;border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,212,0,.15)}
+  ::placeholder{color:#666}
+  section.blk{display:none}
+  section.blk.active{display:block;animation:slideIn .45s cubic-bezier(.2,.8,.2,1)}
+  section.blk.active .q{opacity:0;animation:fadeUp .45s ease forwards}
+  @keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+  .nav .btn{font-size:22px;padding:14px 28px}
+  .nav .btn.ghost{font-size:18px;padding:12px 20px}
+  .nav .btn[hidden]{display:none}
+  .submit{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:14px;text-align:center}
+  .btn{background:var(--yellow);color:var(--black);border:none;border-radius:14px;padding:18px 34px;font-family:'Barlow Condensed';font-style:italic;
+    font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;transition:.2s;box-shadow:0 10px 30px rgba(255,212,0,.25)}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,212,0,.35)}
+  .btn.ghost{background:transparent;color:var(--yellow);border:1px solid var(--yellow);box-shadow:none;font-size:20px;padding:12px 24px}
+  .hint{color:var(--muted);font-size:13px}
+  .thanks{display:none;text-align:center;padding:60px 22px 90px;max-width:640px;margin:0 auto}
+  .thanks .flag{font-size:64px}
+  .thanks h2{font-family:'Barlow Condensed';font-style:italic;font-weight:800;text-transform:uppercase;font-size:clamp(44px,9vw,74px);line-height:.9;margin:14px 0}
+  .thanks h2 span{color:var(--yellow)}
+  .thanks p{color:#cfcfc8;line-height:1.6;margin-bottom:18px}
+  .stars{color:var(--yellow);font-size:22px;letter-spacing:4px}
+  footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px;text-align:center;padding:24px 22px 34px}
+  footer b{color:var(--yellow)}
+  @media (max-width:560px){
+    .scale.nps{grid-template-columns:repeat(6,1fr)}
+    .blk-h h2{font-size:22px}
+    .tab{font-size:13px;padding:10px}
+  }
+</style>
+</head>
+<body>
+<div class="checker"></div>
+<header>
+  <svg class="speed" viewBox="0 0 200 200" aria-hidden="true">
+    <g stroke="#FFD400" stroke-width="6" stroke-linecap="round">
+      <line x1="20" y1="50" x2="180" y2="50"/><line x1="50" y1="80" x2="190" y2="80"/>
+      <line x1="10" y1="110" x2="170" y2="110"/><line x1="70" y1="140" x2="195" y2="140"/>
+    </g>
+  </svg>
+  <div class="brand"><i class="dot"></i>Sí Viajo Sports · GP de Brasil</div>
+  <h1>Interlagos<span>2026</span></h1>
+  <p class="sub" id="heroSub">¡Volviste de Interlagos! Queremos saber cómo lo viviste, de punta a punta. Son 5 minutos y nos ayudan a que el próximo GP sea todavía mejor.</p>
+  <div class="meta">
+    <span class="pill">🏁 5 al 9 de noviembre</span>
+    <span class="pill">✈️ 4 vuelos charter</span>
+    <span class="pill">⏱ 5 minutos</span>
+  </div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab on" data-mode="pasajeros" role="tab">Pasajeros<small>Encuesta post viaje</small></button>
+  <button class="tab" data-mode="coordinadores" role="tab">Coordinadores<small>Debrief interno</small></button>
+</div>
+
+<div class="progress-wrap"><div class="progress-in">
+  <div class="bar"><i id="barFill"></i></div>
+  <div class="ptxt" id="ptxt">0 / 0</div>
+</div></div>
+
+<main id="main">
+  <div class="intro" id="intro"></div>
+  <form id="form" novalidate></form>
+  <div class="nav">
+    <button class="btn ghost" id="prev" type="button">← Anterior</button>
+    <button class="btn" id="next" type="button">Siguiente →</button>
+    <button class="btn" id="send" type="button" hidden>Enviar encuesta 🏁</button>
+  </div>
+  <div class="submit"><span class="hint" id="hint">Podés dejar preguntas sin responder.</span></div>
+</main>
+
+<div class="thanks" id="thanks">
+  <div class="flag">🏁</div>
+  <h2 id="thxTitle">¡Gracias, <span>campeón!</span></h2>
+  <p id="thxText">Tus respuestas nos ayudan a que el próximo GP sea todavía mejor. Si te gustó el viaje, nos ayuda un montón que nos dejes tu reseña en Google.</p>
+  <div class="stars" id="thxStars">★★★★★</div>
+  <p class="hint" id="thxNote" style="margin-top:10px">Más de 2.000 viajeros ya nos calificaron con 4,9.</p>
+  <button class="btn ghost" id="again" type="button">Volver a la encuesta</button>
+</div>
+
+<footer>Sí Viajo · <b>+14 años</b> armando viajes a medida · Acompañamiento 24/7 en destino</footer>
+
+<script>
+/* =========================================================
+   CONFIGURACIÓN
+   Pegar acá la URL de la Web App de Google Apps Script
+   (termina en /exec). Ver README.
+   ========================================================= */
+const SCRIPT_URL = 'PEGAR_ACA_LA_URL_DE_APPS_SCRIPT';
+
+const esc = (s)=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const scale = (t,ends)=>({type:'scale',t,ends});
+const choice = (t,opts)=>({type:'choice',t,opts});
+const multi = (t,opts)=>({type:'multi',t,opts});
+const text = (t,ph)=>({type:'text',t,ph});
+const short = (t,ph)=>({type:'short',t,ph});
+const nps = (t)=>({type:'nps',t});
+
+const SURVEYS = {
+  pasajeros:{
+    intro:'<b>Puntuá del 1 al 5:</b> 1 es muy mal y 5 es excelente.<br><b>¿Querés contarnos algo más?</b> Debajo de cada pregunta tenés un espacio para comentar.',
+    sub:'¡Volviste de Interlagos! Queremos saber cómo lo viviste, de punta a punta. Son 5 minutos y nos ayudan a que el próximo GP sea todavía mejor.',
+    send:'Enviar encuesta 🏁',
+    blocks:[
+      {h:'Tu viaje',p:'Para conocerte un poco más',q:[
+        choice('¿En qué vuelo viajaste?',['Charter 1','Charter 2','Charter 3','Charter 4','No sé']),
+        choice('¿Con quién viajaste?',['Solo','En pareja','Con amigos','En familia','Con compañeros de trabajo']),
+        choice('¿Es tu primer GP de F1 en vivo?',['Sí','No, ya fui a Interlagos','No, ya fui a otro GP']),
+        choice('¿Es tu primer viaje con Sí Viajo?',['Sí','No']),
+        choice('¿Cómo nos conociste?',['Instagram','Recomendación','Google','La Nena de F1','Ya era cliente','Otro'])
+      ]},
+      {h:'La compra y la previa',p:'Antes de salir de casa',q:[
+        scale('Atención de tu asesor durante la compra'),
+        scale('Claridad de lo que incluía tu paquete',null,'vuelo, hotel, traslados, entrada'),
+        scale('Información que recibiste antes de viajar'),
+        scale('Comunicación previa (grupo de WhatsApp, mails, recordatorios)'),
+        text('¿Hubo algo que te enteraste recién en el viaje y te hubiera gustado saber antes?','Contanos…')
+      ]},
+      {h:'Vuelo charter',p:'Ezeiza – São Paulo – Ezeiza',q:[
+        scale('Organización del check-in en Ezeiza'),
+        scale('Puntualidad del vuelo de ida'),
+        scale('Puntualidad del vuelo de vuelta'),
+        scale('Servicio a bordo (comida, atención, comodidad)'),
+        scale('Presencia y ayuda de los responsables Sí Viajo en el avión'),
+        text('Comentarios sobre los vuelos','Lo bueno y lo que mejorarías…')
+      ]},
+      {h:'Llegada y traslados',p:'Aeropuerto ↔ hotel',q:[
+        scale('Recepción en el aeropuerto de São Paulo'),
+        scale('Tiempo de espera hasta salir hacia el hotel'),
+        scale('Comodidad del transporte'),
+        scale('Traslado hotel → aeropuerto el día de regreso')
+      ]},
+      {h:'Hotel',p:'Tu base en São Paulo',q:[
+        short('¿En qué hotel te alojaste?','Nombre del hotel'),
+        scale('Check-in (tiempo, habitación lista, orden)'),
+        scale('Habitación (limpieza, comodidad, descanso)'),
+        scale('Desayuno'),
+        scale('Ubicación'),
+        scale('Atención del personal'),
+        choice('¿Volverías a elegir este hotel?',['Sí','No','Me da igual']),
+        text('Comentarios sobre el hotel','Contanos…')
+      ]},
+      {h:'Traslados al circuito',p:'Hotel ↔ Interlagos',q:[
+        multi('¿Qué días usaste el traslado?',['Viernes','Sábado','Domingo']),
+        scale('Puntualidad de las salidas desde el hotel'),
+        scale('Tiempo de viaje hasta Interlagos'),
+        scale('Claridad del punto de encuentro a la salida del circuito'),
+        scale('Organización del regreso al hotel (espera, orden, seguridad)'),
+        scale('Comodidad de los micros / vans'),
+        text('¿Qué día fue el más complicado y por qué?','Contanos…')
+      ]},
+      {h:'Circuito y entradas',p:'Adentro del autódromo',q:[
+        short('¿Qué tipo de entrada tenías?','Sector / tribuna / hospitality'),
+        scale('Entrega de entradas (tiempo, claridad, sin problemas)'),
+        scale('Ubicación y visibilidad desde tu sector'),
+        scale('Experiencia general en el autódromo (accesos, servicios, seguridad)'),
+        choice('¿Cambiarías de sector la próxima vez?',['Sí, a uno mejor','Sí, a uno más económico','No'])
+      ]},
+      {h:'Coordinadores',p:'El equipo Sí Viajo en destino',q:[
+        scale('Disponibilidad cuando los necesitaste'),
+        scale('Claridad de las indicaciones (horarios, puntos de encuentro, cambios)'),
+        scale('Resolución de problemas'),
+        scale('Buena onda y trato'),
+        scale('Atención 24/7 por WhatsApp'),
+        text('¿Querés destacar a algún coordinador? ¿Por qué?','Nombre y lo que hizo…')
+      ]},
+      {h:'Experiencias extra',p:'Lo que sumamos al GP',q:[
+        choice('¿Fuiste a la cena del viernes con La Nena de F1?',['Sí','No']),
+        scale('Si fuiste: ¿qué tal la cena? (lugar, comida, dinámica)'),
+        choice('¿Hiciste algún opcional el lunes?',['Sí','No']),
+        short('Si hiciste un opcional, ¿cuál y qué tal?','Contanos…'),
+        choice('¿Jugaste al juego / app de Sí Viajo Sports?',['Sí','No','No me enteré']),
+        scale('Si jugaste: ¿qué te pareció?'),
+        text('¿Qué experiencia te hubiera gustado sumar?','Ideas bienvenidas…')
+      ]},
+      {h:'Balance general',p:'La bandera a cuadros',q:[
+        nps('Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo?'),
+        choice('¿Cumplimos lo que esperabas?',['Superó lo que esperaba','Cumplió','Quedó por debajo']),
+        scale('Relación precio / calidad del paquete'),
+        text('Lo mejor del viaje','Ese momento que no te olvidás…'),
+        text('Lo que tenemos que mejorar sí o sí','Sin filtro…')
+      ]},
+      {h:'Lo que viene',p:'Tu próxima carrera',q:[
+        choice('¿Volverías a Interlagos 2027 con Sí Viajo?',['Sí','Tal vez','No']),
+        multi('¿Qué otro GP te gustaría vivir?',['Mónaco','Silverstone','Monza','Las Vegas','Miami','Abu Dhabi','Spa','Otro']),
+        choice('¿Te interesaría una experiencia VIP / hospitality para el próximo GP?',['Sí','Quizás, según precio','No']),
+        multi('¿Te interesan otros eventos deportivos?',['Fútbol','Rugby','Tenis','NBA','MotoGP','Otro']),
+        choice('¿Te podemos contactar para tu próximo viaje?',['Sí','No']),
+        text('¿Nos dejás tu testimonio para compartir?','Escribilo acá…'),
+        choice('¿Nos autorizás a publicarlo con tu nombre?',['Sí','Sí, sin mi nombre','No'])
+      ]}
+    ],
+    thx:['¡Gracias, <span>campeón!</span>','Tus respuestas nos ayudan a que el próximo GP sea todavía mejor. Si te gustó el viaje, nos ayuda un montón que nos dejes tu reseña en Google.',true]
+  },
+  coordinadores:{
+    intro:'<b>Debrief interno</b> para los 3 responsables de cada avión. Completalo dentro de la semana del regreso. Puntaje 1 a 5 por etapa y, en cada una, qué falló y qué propondrías.',
+    sub:'Debrief del equipo. Lo que vimos en destino, lo que falló y lo que cambiamos para 2027.',
+    send:'Enviar debrief 🏁',
+    blocks:[
+      {h:'Datos',p:'Quién y dónde',q:[
+        short('Tu nombre','Nombre y apellido'),
+        choice('Vuelo que acompañaste',['Charter 1','Charter 2','Charter 3','Charter 4']),
+        short('Cantidad de pasajeros a cargo','Ej: 60')
+      ]},
+      ...[
+        ['Ezeiza','Check-in, presentación de pasajeros, documentación'],
+        ['Vuelos','Horarios, demoras, incidencias a bordo'],
+        ['Llegada y traslado al hotel','Recepción y tiempos'],
+        ['Hoteles','Rooming, habitaciones, quejas recibidas'],
+        ['Traslados al circuito','Puntualidad del proveedor, regresos, pasajeros perdidos o demorados'],
+        ['Entradas y operatoria con Enjoy','Entrega, errores, sectores'],
+        ['Cena y opcionales','Cena del viernes y opcionales del lunes'],
+        ['Regreso del 9','Traslados, check-in, último vuelo 22:40']
+      ].map(([h,p])=>({h,p,q:[scale('Puntaje de la etapa'),text('¿Qué falló?','Detalle…'),text('¿Qué propondrías?','Propuesta…')]})),
+      {h:'Pasajeros',p:'Seguimiento',q:[
+        text('Incidencias (salud, pérdidas, reclamos) y cómo se resolvieron'),
+        text('Pasajeros a seguir: reclamos abiertos o compensaciones pendientes'),
+        text('Pasajeros fanáticos / potencial VIP que detectaste (nombre y por qué)'),
+        text('Pedidos repetidos que escuchaste')
+      ]},
+      {h:'Proveedores',p:'Mantener o cambiar',q:[
+        text('Proveedor que recomendás mantener y por qué'),
+        text('Proveedor que hay que cambiar o renegociar y por qué')
+      ]},
+      {h:'Equipo',p:'Para 2027',q:[
+        choice('¿Alcanzaron 3 responsables por avión?',['Sí','Justo','No']),
+        text('¿Qué roles faltaron?'),
+        text('Información que te faltó antes de viajar'),
+        text('Lo que haríamos distinto en 2027 (top 3)','1.\n2.\n3.')
+      ]}
+    ],
+    thx:['¡Debrief <span>recibido!</span>','Gracias por todo lo que pusiste en Interlagos. Con esto armamos el plan 2027.',false]
+  }
+};
+
+// support optional subtitle via 3rd arg on scale
+function scaleQ(q){return q}
+let mode='pasajeros';
+const form=document.getElementById('form');
+
+function render(){
+  const s=SURVEYS[mode];
+  document.getElementById('intro').innerHTML=s.intro;
+  document.getElementById('heroSub').textContent=s.sub;
+  document.getElementById('send').textContent=s.send;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+  let html='',n=0;
+  s.blocks.forEach((b,bi)=>{
+    html+=`<section class="blk"><div class="blk-h"><div class="num"><span>${String(bi+1).padStart(2,'0')}</span></div><div><h2>${b.h}</h2><p>${b.p}</p></div></div>`;
+    b.q.forEach(q=>{
+      const id=`${mode}_${n++}`;
+      html+=`<div class="q" data-id="${id}" data-label="${esc(String(bi+1).padStart(2,'0')+'. '+b.h+' | '+q.t)}"><label class="t">${q.t}</label>`;
+      if(q.type==='scale'){
+        html+='<div class="scale">'+[1,2,3,4,5].map(v=>`<label class="opt"><input type="radio" name="${id}" value="${v}"><span>${v}</span></label>`).join('')+'</div><div class="ends"><span>Muy mal</span><span>Excelente</span></div>';
+      }else if(q.type==='nps'){
+        html+='<div class="scale nps">'+[...Array(11).keys()].map(v=>`<label class="opt"><input type="radio" name="${id}" value="${v}"><span>${v}</span></label>`).join('')+'</div><div class="ends"><span>Nada probable</span><span>Muy probable</span></div>';
+      }else if(q.type==='choice'||q.type==='multi'){
+        const tp=q.type==='choice'?'radio':'checkbox';
+        html+='<div class="chips">'+q.opts.map(o=>`<label class="opt"><input type="${tp}" name="${id}" value="${o}"><span>${o}</span></label>`).join('')+'</div>';
+      }else if(q.type==='text'){
+        html+=`<textarea name="${id}" placeholder="${q.ph||'Escribí acá…'}"></textarea>`;
+      }else{
+        html+=`<input class="txt" name="${id}" placeholder="${q.ph||''}">`;
+      }
+      if(q.type!=='text'&&q.type!=='short'){
+        html+=`<input class="txt cmt" name="${id}_c" placeholder="💬 Comentario (opcional)">`;
+      }
+      html+='</div>';
+    });
+    const last=b.q[b.q.length-1];
+    if(last.type!=='text'){
+      const id=`${mode}_${n++}`;
+      html+=`<div class="q" data-id="${id}" data-label="${esc(String(bi+1).padStart(2,'0')+'. '+b.h+' | Comentarios del bloque')}"><label class="t">Comentarios sobre este bloque <em>(opcional)</em></label><textarea name="${id}" placeholder="Lo que quieras sumar…"></textarea></div>`;
+    }
+    html+='</section>';
+  });
+  form.innerHTML=html;
+  step=0; go(0);
+}
+
+let step=0;
+function go(i){
+  const secs=[...form.querySelectorAll('section.blk')];
+  step=Math.max(0,Math.min(i,secs.length-1));
+  secs.forEach((s,k)=>s.classList.toggle('active',k===step));
+  secs[step].querySelectorAll('.q').forEach((q,k)=>q.style.animationDelay=(0.12+k*0.09)+'s');
+  const last=step===secs.length-1;
+  document.getElementById('prev').style.visibility=step===0?'hidden':'visible';
+  document.getElementById('next').hidden=last;
+  document.getElementById('send').hidden=!last;
+  document.getElementById('intro').style.display=step===0?'':'none';
+  document.getElementById('barFill').style.width=((step+1)/secs.length*100)+'%';
+  document.getElementById('ptxt').textContent=`Paso ${step+1} / ${secs.length}`;
+  progress();
+}
+document.getElementById('next').addEventListener('click',()=>{go(step+1);document.querySelector('.progress-wrap').scrollIntoView({behavior:'smooth'});});
+document.getElementById('prev').addEventListener('click',()=>{go(step-1);document.querySelector('.progress-wrap').scrollIntoView({behavior:'smooth'});});
+
+function progress(){
+  const qs=[...form.querySelectorAll('.q')];
+  let done=0;
+  qs.forEach(q=>{
+    const els=[...q.querySelectorAll('input,textarea')];
+    const ok=els.some(e=>(e.type==='radio'||e.type==='checkbox')?e.checked:e.value.trim()!=='');
+    q.classList.toggle('done',ok); if(ok)done++;
+  });
+}
+form.addEventListener('input',progress);
+form.addEventListener('change',progress);
+form.addEventListener('submit',e=>e.preventDefault());
+
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  mode=b.dataset.mode; location.hash=mode; showForm(); render(); window.scrollTo({top:0});
+}));
+
+function showForm(){
+  document.getElementById('main').style.display='';
+  document.querySelector('.progress-wrap').style.display='';
+  document.getElementById('thanks').style.display='none';
+}
+function collect(){
+  const answers={};
+  form.querySelectorAll('.q').forEach(q=>{
+    const label=q.dataset.label;
+    const main=[...q.querySelectorAll('input:not(.cmt),textarea')];
+    let val='';
+    if(main.length && (main[0].type==='radio'||main[0].type==='checkbox')){
+      val=main.filter(e=>e.checked).map(e=>e.value).join(', ');
+    }else if(main.length){ val=main[0].value.trim(); }
+    answers[label]=val;
+    const c=q.querySelector('.cmt');
+    if(c) answers[label+' – comentario']=c.value.trim();
+  });
+  return answers;
+}
+
+let sending=false;
+document.getElementById('send').addEventListener('click',async()=>{
+  if(sending) return; sending=true;
+  const btn=document.getElementById('send'); const old=btn.textContent;
+  btn.textContent='Enviando…'; btn.disabled=true;
+  const payload={survey:mode,sentAt:new Date().toISOString(),answers:collect()};
+  try{
+    if(SCRIPT_URL && SCRIPT_URL.startsWith('http')){
+      await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    }else{ console.warn('SCRIPT_URL sin configurar: la respuesta no se guardó.',payload); }
+  }catch(err){ console.error('Error al enviar',err); }
+  btn.textContent=old; btn.disabled=false; sending=false;
+  form.reset(); go(0);
+  const t=SURVEYS[mode].thx;
+  document.getElementById('thxTitle').innerHTML=t[0];
+  document.getElementById('thxText').textContent=t[1];
+  document.getElementById('thxStars').style.display=t[2]?'':'none';
+  document.getElementById('thxNote').style.display=t[2]?'':'none';
+  document.getElementById('main').style.display='none';
+  document.querySelector('.progress-wrap').style.display='none';
+  document.getElementById('thanks').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+document.getElementById('again').addEventListener('click',()=>{showForm();window.scrollTo({top:0});});
+
+function fromHash(){const h=location.hash.slice(1); if(SURVEYS[h]){mode=h;} }
+window.addEventListener('hashchange',()=>{fromHash();showForm();render();});
+fromHash(); render();
+</script>
+</body>
+</html>
