@@ -33,6 +33,20 @@ Encuesta post viaje en un solo HTML (pasajeros + debrief de coordinadores). Las 
 - Las opciones múltiples se guardan separadas por coma.
 - Con `no-cors` el navegador no puede leer la respuesta del servidor, así que la pantalla de gracias se muestra siempre. Verificar en la Sheet.
 
+## Lógica condicional (pregunta de Interlagos 2027)
+
+El último bloque de la encuesta de pasajeros se adapta según cómo viene respondiendo cada uno:
+
+- **Insatisfecho** si pasa cualquiera de estas: NPS de 0 a 6, "¿Cumplimos lo que esperabas?" = "Quedó por debajo", o promedio de las escalas 1–5 respondidas menor a 3 (con al menos 3 respondidas).
+  - **No** se le pregunta por 2027, VIP, otros GP ni testimonio.
+  - Se le ofrece que alguien del equipo lo contacte, se le pide teléfono o mail y qué podemos hacer para mejorar.
+  - La pantalla de gracias **no** pide reseña en Google.
+- **Satisfecho** en cualquier otro caso: ve las preguntas de 2027 (en tono cuidado: "¿Querés que te avisemos primero…?"), VIP, otros GP y testimonio, y al final la invitación a dejar reseña en Google.
+
+En la Sheet se agrega la columna **"Perfil de satisfacción"** para filtrar rápido. Las preguntas que no se le mostraron a alguien quedan vacías.
+
+Los umbrales se cambian en el `<script>`: `NPS_MIN_HAPPY` (por defecto 7) y `AVG_MIN_HAPPY` (por defecto 3).
+
 ## Links directos
 
 - Encuesta de pasajeros: `…/encuesta-interlagos-2026/#pasajeros`

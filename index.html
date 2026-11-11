@@ -169,6 +169,38 @@ const multi = (t,opts)=>({type:'multi',t,opts});
 const text = (t,ph)=>({type:'text',t,ph});
 const short = (t,ph)=>({type:'short',t,ph});
 const nps = (t)=>({type:'nps',t});
+const key = (k,q)=>({...q,key:k});
+const only = (cond,q)=>({...q,showIf:cond});
+
+/* ---------------------------------------------------------
+   PERFIL DE SATISFACCIÓN (solo encuesta de pasajeros)
+   Se considera "unhappy" si cumple cualquiera de estas:
+   - NPS de 0 a 6
+   - "¿Cumplimos lo que esperabas?" = "Quedó por debajo"
+   - Promedio de las escalas 1–5 respondidas menor a 3
+     (con al menos 3 escalas respondidas)
+   Si no respondió nada de eso, se trata como "happy".
+   --------------------------------------------------------- */
+const NPS_MIN_HAPPY = 7;
+const AVG_MIN_HAPPY = 3;
+function mood(){
+  if(mode!=='pasajeros') return 'happy';
+  const get=(k)=>{const el=form.querySelector(`.q[data-key="${k}"] input:not(.cmt):checked`);return el?el.value:null;};
+  const n=get('nps'); if(n!==null && Number(n)<NPS_MIN_HAPPY) return 'unhappy';
+  if(get('expect')==='Quedó por debajo') return 'unhappy';
+  const vals=[...form.querySelectorAll('.q[data-type="scale"] input:checked')].map(e=>Number(e.value));
+  if(vals.length>=3 && vals.reduce((a,b)=>a+b,0)/vals.length<AVG_MIN_HAPPY) return 'unhappy';
+  return 'happy';
+}
+function applyMood(){
+  const m=mood();
+  form.querySelectorAll('.q[data-show]').forEach(q=>{q.style.display=q.dataset.show===m?'':'none';});
+  form.querySelectorAll('.blk[data-h-unhappy]').forEach(b=>{
+    b.querySelector('h2').textContent=m==='unhappy'?b.dataset.hUnhappy:b.dataset.hHappy;
+    b.querySelector('.blk-h p').textContent=m==='unhappy'?b.dataset.pUnhappy:b.dataset.pHappy;
+  });
+  return m;
+}
 
 const SURVEYS = {
   pasajeros:{
@@ -248,20 +280,26 @@ const SURVEYS = {
         text('¿Qué experiencia te hubiera gustado sumar?','Ideas bienvenidas…')
       ]},
       {h:'Balance general',p:'La bandera a cuadros',q:[
-        nps('Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo?'),
-        choice('¿Cumplimos lo que esperabas?',['Superó lo que esperaba','Cumplió','Quedó por debajo']),
+        key('nps',nps('Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo?')),
+        key('expect',choice('¿Cumplimos lo que esperabas?',['Superó lo que esperaba','Cumplió','Quedó por debajo'])),
         scale('Relación precio / calidad del paquete'),
         text('Lo mejor del viaje','Ese momento que no te olvidás…'),
         text('Lo que tenemos que mejorar sí o sí','Sin filtro…')
       ]},
-      {h:'Lo que viene',p:'Tu próxima carrera',q:[
-        choice('¿Volverías a Interlagos 2027 con Sí Viajo?',['Sí','Tal vez','No']),
-        multi('¿Qué otro GP te gustaría vivir?',['Mónaco','Silverstone','Monza','Las Vegas','Miami','Abu Dhabi','Spa','Otro']),
-        choice('¿Te interesaría una experiencia VIP / hospitality para el próximo GP?',['Sí','Quizás, según precio','No']),
-        multi('¿Te interesan otros eventos deportivos?',['Fútbol','Rugby','Tenis','NBA','MotoGP','Otro']),
-        choice('¿Te podemos contactar para tu próximo viaje?',['Sí','No']),
-        text('¿Nos dejás tu testimonio para compartir?','Escribilo acá…'),
-        choice('¿Nos autorizás a publicarlo con tu nombre?',['Sí','Sí, sin mi nombre','No'])
+      // Este bloque se adapta según cómo respondió el "Balance general":
+      // happy   → se muestran las preguntas de 2027, VIP y testimonio
+      // unhappy → se muestran solo preguntas de contención y contacto
+      {h:'Lo que viene',hUnhappy:'Queremos escucharte',p:'Tu próxima carrera',pUnhappy:'Tu opinión nos importa',q:[
+        only('happy',choice('¡Nos encantaría volver a vivirlo con vos! ¿Querés que te avisemos primero cuando abramos Interlagos 2027?',['Sí, avisame primero','Tal vez, contame más adelante','Por ahora no'])),
+        only('happy',multi('¿Qué otro GP te gustaría vivir?',['Mónaco','Silverstone','Monza','Las Vegas','Miami','Abu Dhabi','Spa','Otro'])),
+        only('happy',choice('¿Te interesaría una experiencia VIP / hospitality para el próximo GP?',['Sí','Quizás, según precio','No'])),
+        only('happy',multi('¿Te interesan otros eventos deportivos?',['Fútbol','Rugby','Tenis','NBA','MotoGP','Otro'])),
+        only('happy',choice('¿Te podemos contactar para tu próximo viaje?',['Sí','No'])),
+        only('happy',text('¿Nos dejás tu testimonio para compartir?','Escribilo acá…')),
+        only('happy',choice('¿Nos autorizás a publicarlo con tu nombre?',['Sí','Sí, sin mi nombre','No'])),
+        only('unhappy',choice('Lamentamos que el viaje no haya estado a la altura de lo que esperabas. ¿Querés que alguien del equipo te contacte personalmente?',['Sí, por favor','No, gracias'])),
+        only('unhappy',short('¿Por dónde te contactamos?','Teléfono o mail')),
+        only('unhappy',text('¿Hay algo que podamos hacer ahora para mejorar tu experiencia?','Contanos con total sinceridad…'))
       ]}
     ],
     thx:['¡Gracias, <span>campeón!</span>','Tus respuestas nos ayudan a que el próximo GP sea todavía mejor. Si te gustó el viaje, nos ayuda un montón que nos dejes tu reseña en Google.',true]
@@ -307,8 +345,6 @@ const SURVEYS = {
   }
 };
 
-// support optional subtitle via 3rd arg on scale
-function scaleQ(q){return q}
 let mode='pasajeros';
 const form=document.getElementById('form');
 
@@ -320,10 +356,12 @@ function render(){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
   let html='',n=0;
   s.blocks.forEach((b,bi)=>{
-    html+=`<section class="blk"><div class="blk-h"><div class="num"><span>${String(bi+1).padStart(2,'0')}</span></div><div><h2>${b.h}</h2><p>${b.p}</p></div></div>`;
+    const alt=b.hUnhappy?` data-h-happy="${esc(b.h)}" data-h-unhappy="${esc(b.hUnhappy)}" data-p-happy="${esc(b.p)}" data-p-unhappy="${esc(b.pUnhappy)}"`:'';
+    html+=`<section class="blk"${alt}><div class="blk-h"><div class="num"><span>${String(bi+1).padStart(2,'0')}</span></div><div><h2>${b.h}</h2><p>${b.p}</p></div></div>`;
     b.q.forEach(q=>{
       const id=`${mode}_${n++}`;
-      html+=`<div class="q" data-id="${id}" data-label="${esc(String(bi+1).padStart(2,'0')+'. '+b.h+' | '+q.t)}"><label class="t">${q.t}</label>`;
+      const attrs=`data-type="${q.type}"`+(q.key?` data-key="${q.key}"`:'')+(q.showIf?` data-show="${q.showIf}"`:'');
+      html+=`<div class="q" data-id="${id}" ${attrs} data-label="${esc(String(bi+1).padStart(2,'0')+'. '+b.h+' | '+q.t)}"><label class="t">${q.t}</label>`;
       if(q.type==='scale'){
         html+='<div class="scale">'+[1,2,3,4,5].map(v=>`<label class="opt"><input type="radio" name="${id}" value="${v}"><span>${v}</span></label>`).join('')+'</div><div class="ends"><span>Muy mal</span><span>Excelente</span></div>';
       }else if(q.type==='nps'){
@@ -356,8 +394,9 @@ let step=0;
 function go(i){
   const secs=[...form.querySelectorAll('section.blk')];
   step=Math.max(0,Math.min(i,secs.length-1));
+  applyMood();
   secs.forEach((s,k)=>s.classList.toggle('active',k===step));
-  secs[step].querySelectorAll('.q').forEach((q,k)=>q.style.animationDelay=(0.12+k*0.09)+'s');
+  [...secs[step].querySelectorAll('.q')].filter(q=>q.style.display!=='none').forEach((q,k)=>q.style.animationDelay=(0.12+k*0.09)+'s');
   const last=step===secs.length-1;
   document.getElementById('prev').style.visibility=step===0?'hidden':'visible';
   document.getElementById('next').hidden=last;
@@ -394,8 +433,16 @@ function showForm(){
 }
 function collect(){
   const answers={};
+  const m=applyMood();
+  if(mode==='pasajeros') answers['Perfil de satisfacción']=m==='unhappy'?'Insatisfecho – NO se preguntó 2027':'Satisfecho – se preguntó 2027';
   form.querySelectorAll('.q').forEach(q=>{
     const label=q.dataset.label;
+    const hidden=q.style.display==='none';
+    if(hidden){ // pregunta que no se le mostró: va vacía
+      answers[label]='';
+      if(q.querySelector('.cmt')) answers[label+' – comentario']='';
+      return;
+    }
     const main=[...q.querySelectorAll('input:not(.cmt),textarea')];
     let val='';
     if(main.length && (main[0].type==='radio'||main[0].type==='checkbox')){
@@ -414,6 +461,7 @@ document.getElementById('send').addEventListener('click',async()=>{
   const btn=document.getElementById('send'); const old=btn.textContent;
   btn.textContent='Enviando…'; btn.disabled=true;
   const payload={survey:mode,sentAt:new Date().toISOString(),answers:collect()};
+  const wasUnhappy=mode==='pasajeros' && mood()==='unhappy';
   try{
     if(SCRIPT_URL && SCRIPT_URL.startsWith('http')){
       await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',
@@ -422,7 +470,9 @@ document.getElementById('send').addEventListener('click',async()=>{
   }catch(err){ console.error('Error al enviar',err); }
   btn.textContent=old; btn.disabled=false; sending=false;
   form.reset(); go(0);
-  const t=SURVEYS[mode].thx;
+  const t=wasUnhappy
+    ? ['Gracias por <span>contarnos.</span>','Leemos cada respuesta. Lo que nos compartiste va directo al equipo para mejorar, y si pediste que te contactemos, alguien de Sí Viajo se va a comunicar con vos.',false]
+    : SURVEYS[mode].thx;
   document.getElementById('thxTitle').innerHTML=t[0];
   document.getElementById('thxText').textContent=t[1];
   document.getElementById('thxStars').style.display=t[2]?'':'none';
