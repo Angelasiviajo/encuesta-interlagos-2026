@@ -93,6 +93,10 @@
   .thanks h2{font-family:'Barlow Condensed';font-style:italic;font-weight:800;text-transform:uppercase;font-size:clamp(44px,9vw,74px);line-height:.9;margin:14px 0}
   .thanks h2 span{color:var(--yellow)}
   .thanks p{color:#cfcfc8;line-height:1.6;margin-bottom:18px}
+  .thanks a.btn{display:inline-block;text-decoration:none;margin:6px 0 22px}
+  .thanks a.btn[hidden]{display:none}
+  .req-msg{color:var(--yellow);font-size:13px;margin-top:10px;display:none}
+  .q.missing .req-msg{display:block}
   .stars{color:var(--yellow);font-size:22px;letter-spacing:4px}
   footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px;text-align:center;padding:24px 22px 34px}
   footer b{color:var(--yellow)}
@@ -149,6 +153,7 @@
   <p id="thxText">Tus respuestas nos ayudan a que el próximo GP sea todavía mejor. Si te gustó el viaje, nos ayuda un montón que nos dejes tu reseña en Google.</p>
   <div class="stars" id="thxStars">★★★★★</div>
   <p class="hint" id="thxNote" style="margin-top:10px">Más de 2.000 viajeros ya nos calificaron con 4,9.</p>
+  <p><a class="btn" id="thxReview" href="#" target="_blank" rel="noopener" hidden>Dejar mi reseña en Google ⭐</a></p>
   <button class="btn ghost" id="again" type="button">Volver a la encuesta</button>
 </div>
 
@@ -205,89 +210,38 @@ function applyMood(){
 const SURVEYS = {
   pasajeros:{
     intro:'<b>Puntuá del 1 al 5:</b> 1 es muy mal y 5 es excelente.<br><b>¿Querés contarnos algo más?</b> Debajo de cada pregunta tenés un espacio para comentar.',
-    sub:'¡Volviste de Interlagos! Queremos saber cómo lo viviste, de punta a punta. Son 5 minutos y nos ayudan a que el próximo GP sea todavía mejor.',
+    sub:'¡Volviste de Interlagos! Contanos cómo lo viviste. Son 3 minutos y nos ayudan a que el próximo GP sea todavía mejor.',
     send:'Enviar encuesta 🏁',
     blocks:[
       {h:'Tu viaje',p:'Para conocerte un poco más',q:[
         choice('¿En qué vuelo viajaste?',['Charter 1','Charter 2','Charter 3','Charter 4','No sé']),
-        choice('¿Con quién viajaste?',['Solo','En pareja','Con amigos','En familia','Con compañeros de trabajo']),
-        choice('¿Es tu primer GP de F1 en vivo?',['Sí','No, ya fui a Interlagos','No, ya fui a otro GP']),
-        choice('¿Es tu primer viaje con Sí Viajo?',['Sí','No']),
-        choice('¿Cómo nos conociste?',['Instagram','Recomendación','Google','La Nena de F1','Ya era cliente','Otro'])
+        choice('¿Es tu primer GP de F1 en vivo?',['Sí','No, ya fui a Interlagos','No, ya fui a otro GP'])
       ]},
-      {h:'La compra y la previa',p:'Antes de salir de casa',q:[
-        scale('Atención de tu asesor durante la compra'),
-        scale('Claridad de lo que incluía tu paquete',null,'vuelo, hotel, traslados, entrada'),
-        scale('Información que recibiste antes de viajar'),
-        scale('Comunicación previa (grupo de WhatsApp, mails, recordatorios)'),
-        text('¿Hubo algo que te enteraste recién en el viaje y te hubiera gustado saber antes?','Contanos…')
-      ]},
-      {h:'Vuelo charter',p:'Ezeiza – São Paulo – Ezeiza',q:[
-        scale('Organización del check-in en Ezeiza'),
-        scale('Servicio a bordo (comida, atención, comodidad)'),
-        scale('Presencia y ayuda de los responsables Sí Viajo en el avión'),
-        text('Comentarios sobre los vuelos','Lo bueno y lo que mejorarías…')
-      ]},
-      {h:'Traslados',p:'Aeropuerto, hotel y circuito',q:[
-        {...scale('¿Cómo evaluás los traslados en general?'),noCmt:true},
-        text('Comentarios sobre los traslados','Contanos lo que quieras…')
-      ]},
-      {h:'Hotel',p:'Tu base en São Paulo',q:[
-        short('¿En qué hotel te alojaste?','Nombre del hotel'),
-        scale('Check-in (tiempo, habitación lista, orden)'),
-        scale('Habitación (limpieza, comodidad, descanso)'),
-        scale('Desayuno'),
-        scale('Ubicación'),
-        scale('Atención del personal'),
-        choice('¿Volverías a elegir este hotel?',['Sí','No','Me da igual']),
-        text('Comentarios sobre el hotel','Contanos…')
-      ]},
-      {h:'Circuito y entradas',p:'Adentro del autódromo',q:[
-        short('¿Qué tipo de entrada tenías?','Sector / tribuna / hospitality'),
-        scale('Entrega de entradas (tiempo, claridad, sin problemas)'),
-        scale('Ubicación y visibilidad desde tu sector'),
-        scale('Experiencia general en el autódromo (accesos, servicios, seguridad)'),
-        choice('¿Cambiarías de sector la próxima vez?',['Sí, a uno mejor','Sí, a uno más económico','No'])
-      ]},
-      {h:'Coordinadores',p:'El equipo Sí Viajo en destino',q:[
-        scale('Disponibilidad cuando los necesitaste'),
-        scale('Claridad de las indicaciones (horarios, puntos de encuentro, cambios)'),
-        scale('Resolución de problemas'),
-        scale('Buena onda y trato'),
-        scale('Atención 24/7 por WhatsApp'),
-        text('¿Querés destacar a algún coordinador? ¿Por qué?','Nombre y lo que hizo…')
-      ]},
-      {h:'Experiencias extra',p:'Lo que sumamos al GP',q:[
-        choice('¿Fuiste a la cena del viernes con La Nena de F1?',['Sí','No']),
-        scale('Si fuiste: ¿qué tal la cena? (lugar, comida, dinámica)'),
-        choice('¿Jugaste al juego / app de Sí Viajo Sports?',['Sí','No','No me enteré']),
-        scale('Si jugaste: ¿qué te pareció?'),
-        text('¿Qué experiencia te hubiera gustado sumar?','Ideas bienvenidas…')
+      {h:'La experiencia',p:'Del 1 al 5, ¿cómo evaluás…?',q:[
+        scale('La atención y la información antes de viajar'),
+        scale('El vuelo charter (check-in y servicio a bordo)'),
+        scale('Los traslados en general'),
+        scale('El hotel'),
+        scale('Las entradas y la experiencia en el circuito'),
+        scale('Los coordinadores de Sí Viajo'),
+        scale('La cena del viernes con La Nena de F1 (si fuiste)')
       ]},
       {h:'Balance general',p:'La bandera a cuadros',q:[
-        key('nps',nps('Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo?')),
+        key('nps',{...nps('Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo?'),required:true}),
         key('expect',choice('¿Cumplimos lo que esperabas?',['Superó lo que esperaba','Cumplió','Quedó por debajo'])),
-        scale('Relación precio / calidad del paquete'),
-        text('Lo mejor del viaje','Ese momento que no te olvidás…'),
-        text('Lo que tenemos que mejorar sí o sí','Sin filtro…')
+        text('Lo mejor del viaje y lo que tenemos que mejorar','Sin filtro…')
       ]},
       // Este bloque se adapta según cómo respondió el "Balance general":
-      // happy   → se muestran las preguntas de 2027, VIP y testimonio
-      // unhappy → se muestran solo preguntas de contención y contacto
+      // happy   → preguntas de 2027 y VIP
+      // unhappy → solo contención y contacto
       {h:'Lo que viene',hUnhappy:'Queremos escucharte',p:'Tu próxima carrera',pUnhappy:'Tu opinión nos importa',q:[
         only('happy',choice('¡Nos encantaría volver a vivirlo con vos! ¿Querés que te avisemos primero cuando abramos Interlagos 2027?',['Sí, avisame primero','Tal vez, contame más adelante','Por ahora no'])),
-        only('happy',multi('¿Qué otro GP te gustaría vivir?',['Mónaco','Silverstone','Monza','Las Vegas','Miami','Abu Dhabi','Spa','Otro'])),
         only('happy',choice('¿Te interesaría una experiencia VIP / hospitality para el próximo GP?',['Sí','Quizás, según precio','No'])),
-        only('happy',multi('¿Te interesan otros eventos deportivos?',['Fútbol','Rugby','Tenis','NBA','MotoGP','Otro'])),
-        only('happy',choice('¿Te podemos contactar para tu próximo viaje?',['Sí','No'])),
-        only('happy',text('¿Nos dejás tu testimonio para compartir?','Escribilo acá…')),
-        only('happy',choice('¿Nos autorizás a publicarlo con tu nombre?',['Sí','Sí, sin mi nombre','No'])),
         only('unhappy',choice('Lamentamos que el viaje no haya estado a la altura de lo que esperabas. ¿Querés que alguien del equipo te contacte personalmente?',['Sí, por favor','No, gracias'])),
-        only('unhappy',short('¿Por dónde te contactamos?','Teléfono o mail')),
-        only('unhappy',text('¿Hay algo que podamos hacer ahora para mejorar tu experiencia?','Contanos con total sinceridad…'))
+        only('unhappy',short('¿Por dónde te contactamos?','Teléfono o mail'))
       ]}
     ],
-    thx:['¡Gracias, <span>campeón!</span>','Tus respuestas nos ayudan a que el próximo GP sea todavía mejor. Si te gustó el viaje, nos ayuda un montón que nos dejes tu reseña en Google.',true]
+    thx:['¡Gracias, <span>campeón!</span>','Tus respuestas nos ayudan a que el próximo GP sea todavía mejor.',false]
   },
   coordinadores:{
     intro:'<b>Debrief interno</b> para los 3 responsables de cada avión. Completalo dentro de la semana del regreso. Puntaje 1 a 5 por etapa y, en cada una, qué falló y qué propondrías.',
@@ -345,8 +299,8 @@ function render(){
     html+=`<section class="blk"${alt}><div class="blk-h"><div class="num"><span>${String(bi+1).padStart(2,'0')}</span></div><div><h2>${b.h}</h2><p>${b.p}</p></div></div>`;
     b.q.forEach(q=>{
       const id=`${mode}_${n++}`;
-      const attrs=`data-type="${q.type}"`+(q.key?` data-key="${q.key}"`:'')+(q.showIf?` data-show="${q.showIf}"`:'');
-      html+=`<div class="q" data-id="${id}" ${attrs} data-label="${esc(String(bi+1).padStart(2,'0')+'. '+b.h+' | '+q.t)}"><label class="t">${q.t}</label>`;
+      const attrs=`data-type="${q.type}"`+(q.required?' data-required="1"':'')+(q.key?` data-key="${q.key}"`:'')+(q.showIf?` data-show="${q.showIf}"`:'');
+      html+=`<div class="q" data-id="${id}" ${attrs} data-label="${esc(String(bi+1).padStart(2,'0')+'. '+b.h+' | '+q.t)}"><label class="t">${q.t}${q.required?' <em>(obligatoria)</em>':''}</label>`+(q.required?'<div class="req-msg">Esta pregunta es obligatoria para continuar.</div>':'');
       if(q.type==='scale'){
         html+='<div class="scale">'+[1,2,3,4,5].map(v=>`<label class="opt"><input type="radio" name="${id}" value="${v}"><span>${v}</span></label>`).join('')+'</div><div class="ends"><span>Muy mal</span><span>Excelente</span></div>';
       }else if(q.type==='nps'){
@@ -391,7 +345,17 @@ function go(i){
   document.getElementById('ptxt').textContent=`Paso ${step+1} / ${secs.length}`;
   progress();
 }
-document.getElementById('next').addEventListener('click',()=>{go(step+1);document.querySelector('.progress-wrap').scrollIntoView({behavior:'smooth'});});
+function stepOk(){
+  const sec=form.querySelectorAll('section.blk')[step];
+  let ok=true;
+  sec.querySelectorAll('.q[data-required]').forEach(q=>{
+    const has=!!q.querySelector('input:not(.cmt):checked')||[...q.querySelectorAll('input.txt:not(.cmt),textarea')].some(e=>e.value.trim());
+    q.classList.toggle('missing',!has); if(!has) ok=false;
+  });
+  if(!ok) sec.querySelector('.q.missing').scrollIntoView({behavior:'smooth',block:'center'});
+  return ok;
+}
+document.getElementById('next').addEventListener('click',()=>{if(!stepOk())return;go(step+1);document.querySelector('.progress-wrap').scrollIntoView({behavior:'smooth'});});
 document.getElementById('prev').addEventListener('click',()=>{go(step-1);document.querySelector('.progress-wrap').scrollIntoView({behavior:'smooth'});});
 
 function progress(){
@@ -442,26 +406,37 @@ function collect(){
 
 let sending=false;
 document.getElementById('send').addEventListener('click',async()=>{
-  if(sending) return; sending=true;
+  if(sending) return;
+  if(!stepOk()) return;
+  sending=true;
   const btn=document.getElementById('send'); const old=btn.textContent;
   btn.textContent='Enviando…'; btn.disabled=true;
-  const payload={survey:mode,sentAt:new Date().toISOString(),answers:collect()};
+  const npsEl=form.querySelector('.q[data-key="nps"] input:not(.cmt):checked');
+  const expEl=form.querySelector('.q[data-key="expect"] input:not(.cmt):checked');
+  const payload={survey:mode,sentAt:new Date().toISOString(),
+    nps:npsEl?Number(npsEl.value):null, expect:expEl?expEl.value:null, answers:collect()};
   const wasUnhappy=mode==='pasajeros' && mood()==='unhappy';
+  // El servidor decide si corresponde pedir reseña y, si corresponde, devuelve el link.
+  let reviewUrl=null;
   try{
     if(SCRIPT_URL && SCRIPT_URL.startsWith('http')){
-      await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',
+      const r=await fetch(SCRIPT_URL,{method:'POST',
         headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+      const data=await r.json().catch(()=>({}));
+      if(data && data.ok && typeof data.reviewUrl==='string' && data.reviewUrl.startsWith('https://')) reviewUrl=data.reviewUrl;
     }else{ console.warn('SCRIPT_URL sin configurar: la respuesta no se guardó.',payload); }
   }catch(err){ console.error('Error al enviar',err); }
   btn.textContent=old; btn.disabled=false; sending=false;
-  form.reset(); go(0);
+  form.reset(); form.querySelectorAll('.q.missing').forEach(q=>q.classList.remove('missing')); go(0);
   const t=wasUnhappy
-    ? ['Gracias por <span>contarnos.</span>','Leemos cada respuesta. Lo que nos compartiste va directo al equipo para mejorar, y si pediste que te contactemos, alguien de Sí Viajo se va a comunicar con vos.',false]
+    ? ['Gracias por <span>contarnos.</span>','Leemos cada respuesta. Lo que nos compartiste va directo al equipo para mejorar, y si pediste que te contactemos, alguien de Sí Viajo se va a comunicar con vos.']
     : SURVEYS[mode].thx;
   document.getElementById('thxTitle').innerHTML=t[0];
-  document.getElementById('thxText').textContent=t[1];
-  document.getElementById('thxStars').style.display=t[2]?'':'none';
-  document.getElementById('thxNote').style.display=t[2]?'':'none';
+  document.getElementById('thxText').textContent=t[1]+(reviewUrl?' Si te gustó el viaje, nos ayuda un montón que nos dejes tu reseña en Google.':'');
+  const rv=document.getElementById('thxReview');
+  rv.hidden=!reviewUrl; if(reviewUrl) rv.href=reviewUrl;
+  document.getElementById('thxStars').style.display=reviewUrl?'':'none';
+  document.getElementById('thxNote').style.display=reviewUrl?'':'none';
   document.getElementById('main').style.display='none';
   document.querySelector('.progress-wrap').style.display='none';
   document.getElementById('thanks').style.display='block';

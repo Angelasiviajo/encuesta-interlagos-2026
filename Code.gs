@@ -6,6 +6,10 @@
  * Las columnas se crean solas con el primer envío.
  */
 
+// Link de reseña de Google de Sí Viajo. Solo se devuelve a promotores (NPS 9 o 10).
+const REVIEW_URL = 'PEGAR_ACA_EL_LINK_DE_RESENA_DE_GOOGLE';
+const NPS_MIN_REVIEW = 9;
+
 const SHEETS = {
   pasajeros: 'Pasajeros',
   coordinadores: 'Coordinadores'
@@ -16,6 +20,16 @@ function doPost(e) {
   lock.waitLock(20000);
   try {
     const data = JSON.parse(e.postData.contents);
+    data.answers = data.answers || {};
+
+    // Pedido de reseña: lo decide el servidor, no la página.
+    // Solo encuesta de pasajeros, enviada completa, con NPS 9 o 10.
+    const nps = (typeof data.nps === 'number') ? data.nps : null;
+    const offerReview = data.survey === 'pasajeros' && nps !== null && nps >= NPS_MIN_REVIEW
+      && REVIEW_URL.indexOf('https://') === 0;
+    if (data.survey === 'pasajeros') {
+      data.answers['Se ofreció reseña'] = offerReview ? 'Sí' : 'No';
+    }
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const name = SHEETS[data.survey] || 'Otras';
     const sh = ss.getSheetByName(name) || ss.insertSheet(name);
@@ -47,7 +61,9 @@ function doPost(e) {
     });
     sh.appendRow(row);
 
-    return ContentService.createTextOutput(JSON.stringify({ ok: true }))
+    const out = { ok: true };
+    if (offerReview) out.reviewUrl = REVIEW_URL;
+    return ContentService.createTextOutput(JSON.stringify(out))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))

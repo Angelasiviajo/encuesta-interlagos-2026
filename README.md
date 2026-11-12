@@ -27,25 +27,31 @@ Encuesta post viaje en un solo HTML (pasajeros + debrief de coordinadores). Las 
 
 ## Cómo funciona
 
-- Al tocar *Enviar*, el JS arma un objeto `{ survey, sentAt, answers }` y hace un `POST` (`text/plain`, `mode: 'no-cors'`) a la Web App. Se usa `text/plain` para evitar el preflight de CORS de Apps Script.
+- Al tocar *Enviar*, el JS arma un objeto `{ survey, sentAt, nps, expect, answers }` y hace un `POST` (`text/plain`) a la Web App. Se usa `text/plain` para evitar el preflight de CORS de Apps Script.
 - `survey` vale `pasajeros` o `coordinadores`. Cada uno se guarda en su propia pestaña de la Sheet (se crean solas).
 - Cada pregunta es una columna (`"03. Vuelo charter | Puntualidad del vuelo de ida"`) y su comentario opcional va en la columna siguiente (`… – comentario`). Los encabezados se crean con el primer envío; si se agrega una pregunta nueva, la columna se suma sola al final.
 - Las opciones múltiples se guardan separadas por coma.
-- Con `no-cors` el navegador no puede leer la respuesta del servidor, así que la pantalla de gracias se muestra siempre. Verificar en la Sheet.
+- La página lee la respuesta del servidor (`{ ok, reviewUrl? }`) para decidir si muestra el botón de reseña.
 
-## Lógica condicional (pregunta de Interlagos 2027)
+## Lógica condicional
+
+### Pregunta de Interlagos 2027
 
 El último bloque de la encuesta de pasajeros se adapta según cómo viene respondiendo cada uno:
 
-- **Insatisfecho** si pasa cualquiera de estas: NPS de 0 a 6, "¿Cumplimos lo que esperabas?" = "Quedó por debajo", o promedio de las escalas 1–5 respondidas menor a 3 (con al menos 3 respondidas).
-  - **No** se le pregunta por 2027, VIP, otros GP ni testimonio.
-  - Se le ofrece que alguien del equipo lo contacte, se le pide teléfono o mail y qué podemos hacer para mejorar.
-  - La pantalla de gracias **no** pide reseña en Google.
-- **Satisfecho** en cualquier otro caso: ve las preguntas de 2027 (en tono cuidado: "¿Querés que te avisemos primero…?"), VIP, otros GP y testimonio, y al final la invitación a dejar reseña en Google.
+- **Insatisfecho** si pasa cualquiera de estas: NPS de 0 a 6, "¿Cumplimos lo que esperabas?" = "Quedó por debajo", o promedio de las escalas 1–5 respondidas menor a 3 (con al menos 3 respondidas). No se le pregunta por 2027 ni VIP: se le ofrece contacto personal.
+- **Satisfecho** en cualquier otro caso: ve las preguntas de 2027 y VIP.
 
-En la Sheet se agrega la columna **"Perfil de satisfacción"** para filtrar rápido. Las preguntas que no se le mostraron a alguien quedan vacías.
+Umbrales en el `<script>`: `NPS_MIN_HAPPY` (7) y `AVG_MIN_HAPPY` (3).
 
-Los umbrales se cambian en el `<script>`: `NPS_MIN_HAPPY` (por defecto 7) y `AVG_MIN_HAPPY` (por defecto 3).
+### Pedido de reseña en Google (lo decide el servidor)
+
+- La pregunta de NPS es **obligatoria**: no se puede avanzar ni enviar sin responderla.
+- La página manda `nps` junto con las respuestas. `Code.gs` decide: **solo si es encuesta de pasajeros y NPS 9 o 10** devuelve `reviewUrl`.
+- La página muestra el botón "Dejar mi reseña en Google" **solo si el servidor devolvió el link**. Pasivos (7–8), detractores (0–6) y encuestas sin terminar nunca lo ven.
+- En la Sheet queda la columna **"Se ofreció reseña"** (Sí/No).
+- Configurar en `Code.gs`: `REVIEW_URL` (link de reseña de Google de Sí Viajo). Umbral: `NPS_MIN_REVIEW` (9). Mientras `REVIEW_URL` no empiece con `https://`, no se le muestra el botón a nadie.
+- Como la página necesita leer la respuesta del servidor, el `fetch` ya **no** usa `mode: 'no-cors'`. Las Web Apps de Apps Script permiten esto con `Content-Type: text/plain`. Si el envío falla, se muestra igual la pantalla de gracias, sin botón.
 
 ## Links directos
 
