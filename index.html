@@ -229,13 +229,15 @@ const SURVEYS = {
       {h:'Balance general',p:'La bandera a cuadros',q:[
         key('nps',{...nps('Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo?'),required:true}),
         key('expect',choice('¿Cumplimos lo que esperabas?',['Superó lo que esperaba','Cumplió','Quedó por debajo'])),
+        choice('¿Volverías a contratar un viaje con Sí Viajo Sports?',['Sí, seguro','Probablemente','No']),
         text('Lo mejor del viaje y lo que tenemos que mejorar','Sin filtro…')
       ]},
       // Este bloque se adapta según cómo respondió el "Balance general":
       // happy   → preguntas de 2027 y VIP
       // unhappy → solo contención y contacto
       {h:'Lo que viene',hUnhappy:'Queremos escucharte',p:'Tu próxima carrera',pUnhappy:'Tu opinión nos importa',q:[
-        only('happy',choice('¡Nos encantaría volver a vivirlo con vos! ¿Querés que te avisemos primero cuando abramos Interlagos 2027?',['Sí, avisame primero','Tal vez, contame más adelante','Por ahora no'])),
+        only('happy',multi('¡Nos encantaría volver a vivirlo con vos! ¿Querés que te enviemos los precios de preventa?',['Interlagos 2027','Otros Grandes Premios de F1','Por ahora no'])),
+        only('happy',short('Si te interesa otro Gran Premio, ¿cuál?','Ej: Mónaco, Monza, Las Vegas…')),
         only('happy',choice('¿Te interesaría una experiencia VIP / hospitality para el próximo GP?',['Sí','Quizás, según precio','No'])),
         only('unhappy',choice('Lamentamos que el viaje no haya estado a la altura de lo que esperabas. ¿Querés que alguien del equipo te contacte personalmente?',['Sí, por favor','No, gracias'])),
         only('unhappy',short('¿Por dónde te contactamos?','Teléfono o mail'))

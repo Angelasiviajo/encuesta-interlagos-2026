@@ -23,14 +23,16 @@ Sí Viajo Sports. Generado desde `index.html`. Las preguntas de escala u opcione
 
 1. Del 0 al 10, ¿qué tan probable es que recomiendes Sí Viajo Sports a un amigo? (0 a 10, obligatoria)
 2. ¿Cumplimos lo que esperabas? (Superó lo que esperaba / Cumplió / Quedó por debajo)
-3. Lo mejor del viaje y lo que tenemos que mejorar (abierta)
+3. ¿Volverías a contratar un viaje con Sí Viajo Sports? (Sí, seguro / Probablemente / No)
+4. Lo mejor del viaje y lo que tenemos que mejorar (abierta)
 
 ### 4. Lo que viene / Queremos escucharte (según satisfacción)
 
-1. [Satisfecho] ¡Nos encantaría volver a vivirlo con vos! ¿Querés que te avisemos primero cuando abramos Interlagos 2027? (Sí, avisame primero / Tal vez, contame más adelante / Por ahora no)
-2. [Satisfecho] ¿Te interesaría una experiencia VIP / hospitality para el próximo GP? (Sí / Quizás, según precio / No)
-3. [Insatisfecho] Lamentamos que el viaje no haya estado a la altura de lo que esperabas. ¿Querés que alguien del equipo te contacte personalmente? (Sí, por favor / No, gracias)
-4. [Insatisfecho] ¿Por dónde te contactamos? (abierta corta)
+1. [Satisfecho] ¡Nos encantaría volver a vivirlo con vos! ¿Querés que te enviemos los precios de preventa? (varias: Interlagos 2027 / Otros Grandes Premios de F1 / Por ahora no)
+2. [Satisfecho] Si te interesa otro Gran Premio, ¿cuál? (abierta corta)
+3. [Satisfecho] ¿Te interesaría una experiencia VIP / hospitality para el próximo GP? (Sí / Quizás, según precio / No)
+4. [Insatisfecho] Lamentamos que el viaje no haya estado a la altura de lo que esperabas. ¿Querés que alguien del equipo te contacte personalmente? (Sí, por favor / No, gracias)
+5. [Insatisfecho] ¿Por dónde te contactamos? (abierta corta)
 
 ## Parte 2 · Debrief interno con coordinadores
 
