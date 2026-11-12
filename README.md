@@ -47,10 +47,10 @@ Umbrales en el `<script>`: `NPS_MIN_HAPPY` (7) y `AVG_MIN_HAPPY` (3).
 ### Pedido de reseña en Google (lo decide el servidor)
 
 - La pregunta de NPS es **obligatoria**: no se puede avanzar ni enviar sin responderla.
-- La página manda `nps` junto con las respuestas. `Code.gs` decide: **solo si es encuesta de pasajeros y NPS 9 o 10** devuelve `reviewUrl`.
+- La página manda `nps` y `scales` (los puntajes 1 a 5 respondidos) junto con las respuestas. `Code.gs` decide: **solo si es encuesta de pasajeros, NPS 9 o 10 y ningún puntaje de 1 a 5 menor a 4** devuelve `reviewUrl`. Un 9 o 10 con algún 1, 2 o 3 en las escalas no recibe el link.
 - La página muestra el botón "Dejar mi reseña en Google" **solo si el servidor devolvió el link**. Pasivos (7–8), detractores (0–6) y encuestas sin terminar nunca lo ven.
 - En la Sheet queda la columna **"Se ofreció reseña"** (Sí/No).
-- Configurar en `Code.gs`: `REVIEW_URL` (link de reseña de Google de Sí Viajo). Umbral: `NPS_MIN_REVIEW` (9). Mientras `REVIEW_URL` no empiece con `https://`, no se le muestra el botón a nadie.
+- Configurar en `Code.gs`: `REVIEW_URL` (link de reseña de Google de Sí Viajo). Umbrales: `NPS_MIN_REVIEW` (9) y `SCALE_MIN_REVIEW` (4). Mientras `REVIEW_URL` no empiece con `https://`, no se le muestra el botón a nadie.
 - Como la página necesita leer la respuesta del servidor, el `fetch` ya **no** usa `mode: 'no-cors'`. Las Web Apps de Apps Script permiten esto con `Content-Type: text/plain`. Si el envío falla, se muestra igual la pantalla de gracias, sin botón.
 
 ## Links directos

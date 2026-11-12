@@ -113,4 +113,4 @@ Insatisfecho si: NPS 0 a 6, "Quedó por debajo", o promedio de escalas 1 a 5 men
 
 ## Reseña en Google
 
-Solo se ofrece a quien envía la encuesta con NPS 9 o 10 (lo decide el servidor). El NPS es obligatorio.
+Solo se ofrece a quien envía la encuesta con NPS 9 o 10 y sin ningún puntaje menor a 4 en las preguntas del 1 al 5 (lo decide el servidor). El NPS es obligatorio.

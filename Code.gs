@@ -9,6 +9,9 @@
 // Link de reseña de Google de Sí Viajo. Solo se devuelve a promotores (NPS 9 o 10).
 const REVIEW_URL = 'PEGAR_ACA_EL_LINK_DE_RESENA_DE_GOOGLE';
 const NPS_MIN_REVIEW = 9;
+// Si alguna de las escalas 1 a 5 respondidas es menor a este número, no se ofrece reseña
+// aunque el NPS sea 9 o 10.
+const SCALE_MIN_REVIEW = 4;
 
 const SHEETS = {
   pasajeros: 'Pasajeros',
@@ -23,10 +26,13 @@ function doPost(e) {
     data.answers = data.answers || {};
 
     // Pedido de reseña: lo decide el servidor, no la página.
-    // Solo encuesta de pasajeros, enviada completa, con NPS 9 o 10.
+    // Solo encuesta de pasajeros, enviada completa, con NPS 9 o 10
+    // y sin ningún puntaje menor a 4 en las escalas 1 a 5.
     const nps = (typeof data.nps === 'number') ? data.nps : null;
+    const scales = Array.isArray(data.scales) ? data.scales.map(Number).filter(n => n >= 1 && n <= 5) : [];
+    const lowScore = scales.some(n => n < SCALE_MIN_REVIEW);
     const offerReview = data.survey === 'pasajeros' && nps !== null && nps >= NPS_MIN_REVIEW
-      && REVIEW_URL.indexOf('https://') === 0;
+      && !lowScore && REVIEW_URL.indexOf('https://') === 0;
     if (data.survey === 'pasajeros') {
       data.answers['Se ofreció reseña'] = offerReview ? 'Sí' : 'No';
     }

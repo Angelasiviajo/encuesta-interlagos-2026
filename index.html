@@ -414,7 +414,9 @@ document.getElementById('send').addEventListener('click',async()=>{
   const npsEl=form.querySelector('.q[data-key="nps"] input:not(.cmt):checked');
   const expEl=form.querySelector('.q[data-key="expect"] input:not(.cmt):checked');
   const payload={survey:mode,sentAt:new Date().toISOString(),
-    nps:npsEl?Number(npsEl.value):null, expect:expEl?expEl.value:null, answers:collect()};
+    nps:npsEl?Number(npsEl.value):null, expect:expEl?expEl.value:null,
+    scales:[...form.querySelectorAll('.q[data-type="scale"] input:not(.cmt):checked')].map(e=>Number(e.value)),
+    answers:collect()};
   const wasUnhappy=mode==='pasajeros' && mood()==='unhappy';
   // El servidor decide si corresponde pedir reseña y, si corresponde, devuelve el link.
   let reviewUrl=null;
